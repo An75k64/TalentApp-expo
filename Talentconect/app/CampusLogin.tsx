@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Checkbox } from 'expo-checkbox';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { login } from './api'; // Ensure this is properly implemented in the api.js file
+import { login } from './api/collegeApi'; // Ensure this is properly implemented in the api.js file
 
 const CampusLogin = () => {
   const router = useRouter();

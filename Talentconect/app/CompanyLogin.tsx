@@ -6,27 +6,77 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Checkbox } from 'expo-checkbox'; // Import Expo CheckBox
+import { Checkbox } from 'expo-checkbox'; // Import Expo heckBox
+import {login} from '../app/api/companyApi';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const CampusLogin = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (email && password) {
-      // Proceed to the campus dashboard (or next screen)
-      router.push('/campus-dashboard');
-    } else {
-      alert('Please enter both email and password.');
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please enter both email and password.');
+      return;
+    }
+  
+    // Basic email validation
+    const emailRegex = /\S+@\S+\.\S+/;
+    if (!emailRegex.test(email)) {
+      Alert.alert('Invalid Email', 'Please enter a valid email address.');
+      return;
+    }
+  
+    setLoading(true);
+  
+    try {
+      // Call the login API
+      const response = await login({ email, password });
+  
+      console.log('Login response:', response); // Log the full response to debug
+  
+      // Check if the response contains a token (indicating successful login)
+      if (response.token) {
+        console.log("Login successful!");
+        Alert.alert('Success', 'Login successful!');
+  
+        if (rememberMe) {
+          // Implement the functionality to persist the login information if needed
+          console.log('Remember me selected, saving user info...');
+        }
+  
+        // Store the token locally (for example, in AsyncStorage or your preferred method)
+        // For now, you can log it or store it for further use
+        console.log('JWT Token:', response.token);
+  
+        // Navigate to the campus dashboard
+        router.push('/company-dashboard');
+      } else {
+        console.log('Login failed: No token returned');
+        Alert.alert('Login Failed', response.message || 'Invalid credentials.');
+      }
+    } catch (error) {
+      console.error('Login error:', error); // Log detailed error info for debugging
+      Alert.alert('Error', 'An error occurred during login. Please try again later.');
+    } finally {
+      setLoading(false); // Stop loading spinner
     }
   };
-
+  
   const handleSignUp = () => {
-    router.push('/campus-signup');
+    router.push('/Companysignup');
+  };
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
   };
 
   return (
@@ -51,15 +101,20 @@ const CampusLogin = () => {
         keyboardType="email-address"
       />
 
-      {/* Password Input */}
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        placeholderTextColor="#888"
-        secureTextEntry
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-      />
+<View style={styles.passwordContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#888"
+          secureTextEntry={!passwordVisible}
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+        />
+        <TouchableOpacity onPress={togglePasswordVisibility} style={styles.passwordToggle}>
+          <Icon name={passwordVisible ? 'eye-slash' : 'eye'} size={20} color="#444" />
+        </TouchableOpacity>
+      </View>
+
 
       {/* Remember Me & Forgot Password */}
       <View style={styles.row}>
@@ -137,6 +192,15 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     borderWidth: 1,
     color:'black',
+  },
+  passwordContainer: {
+    width: '100%',
+    position: 'relative',
+  },
+  passwordToggle: {
+    position: 'absolute',
+    right: 15,
+    top: 15,
   },
   row: {
     flexDirection: 'row',

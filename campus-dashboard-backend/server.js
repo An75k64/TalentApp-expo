@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const collegeRoutes = require('./routes/collegeRoutes'); // Import college routes
+const companyRoutes = require('./routes/companyRout'); // Import company routes
 
 dotenv.config(); // Load environment variables
 
@@ -20,6 +21,9 @@ app.use(express.json());
 
 // Use the college routes
 app.use('/api/college', collegeRoutes);
+
+//Use the company routes
+app.use('/api/company', companyRoutes);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)

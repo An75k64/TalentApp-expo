@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, CheckBox, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { register } from './api'; // Importing register function from api.js
+import { register } from './api/collegeApi'; // Importing register function from api.js
 
 const Signup = () => {
   const router = useRouter();

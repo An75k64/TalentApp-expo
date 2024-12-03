@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Checkbox } from 'expo-checkbox'; // Import Expo CheckBox
-import { register } from '../app/api'; // Import the register function from api.js
+import { register } from './api/collegeApi'; // Import the register function from api.js
 
 const Studentsignup = () => {
   const router = useRouter();
@@ -53,15 +53,18 @@ const Studentsignup = () => {
 
         if (response.success) {
           alert(response.message);
+          // Optionally store the token (e.g., localStorage or AsyncStorage)
+          // AsyncStorage.setItem('token', response.token);
+
           router.push('/CampusLogin'); // Redirect to login page on success
         } else {
-          alert('Registration failed. Please try again.');
+          alert(response.message || 'Registration failed. Please try again.');
         }
-      } catch (error: any) {
+      } catch (error) {
         alert(error.message || 'An error occurred during registration.');
       }
     }
-  };
+};
 
   const handleLogin = () => {
     router.push('/CampusLogin'); // Redirect to login page
