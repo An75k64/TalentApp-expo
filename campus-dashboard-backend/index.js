@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const cors = require('cors'); // To enable cross-origin requests
-const authRoutes = require('./routes/auth'); // Authentication routes
+const authRoutes = require('./routes/authRoutes'); // Authentication routes
 
 // Load environment variables
 dotenv.config();
